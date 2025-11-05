@@ -1,7 +1,8 @@
-package com.ktb.community.global.jwt;
+package com.ktb.community.global.provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ktb.community.dto.auth.response.LoginResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,21 +16,35 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class JwtUtil {
+public class JwtProvider {
 
-    private final String jwtKey;
+    @Value("${spring.jwt.access_exp_time}")
+    private long accessExpTime;
+
+    @Value("${spring.jwt.refresh_exp_time}")
+    private long refreshExpTime;
+
+    @Value("${spring.jwt.key}")
+    private String jwtKey;
+
     private final ObjectMapper objectMapper;
 
-    public JwtUtil(@Value("${spring.jwt.key}") String jwtKey, ObjectMapper objectMapper) {
-        this.jwtKey = jwtKey;
+    public JwtProvider(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     public Claims validateToken(String token) throws JwtException {
         SecretKey tokenKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtKey));
         Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(tokenKey).build().parseClaimsJws(token);
-
         return claims.getBody();
+    }
+
+
+    public LoginResponse createTokens(final long memberId){
+        String accessToken = createToken(memberId, accessExpTime);
+        String refreshToken = createToken(memberId, refreshExpTime);
+
+        return new LoginResponse(memberId, accessToken, refreshToken);
     }
 
     public String createToken(final long memberId, final long expired) {
@@ -54,6 +69,5 @@ public class JwtUtil {
         }catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "JSON PARSE EXCEPTION");
         }
-
     }
 }
