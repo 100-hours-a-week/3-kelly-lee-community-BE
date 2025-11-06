@@ -4,6 +4,7 @@ import com.ktb.community.domain.post.Post;
 import com.ktb.community.domain.post_like.PostLike;
 import com.ktb.community.domain.post_stats.PostStats;
 import com.ktb.community.dto.Response;
+import com.ktb.community.global.exception.CustomConflictException;
 import com.ktb.community.repository.member.MemberRepository;
 import com.ktb.community.repository.post.PostRepository;
 import com.ktb.community.repository.post_like.PostLikeRepository;
@@ -59,7 +60,7 @@ class PostServiceImplTest {
         when(postLikeRepository.findByPostIdAndMemberId(postId, memberId)).thenReturn(optionalPostLike);
 
         //when //then
-        assertThrows(ResponseStatusException.class, () -> postService.likePost(postId, memberId));
+        assertThrows(CustomConflictException.class, () -> postService.likePost(postId, memberId));
     }
 
     @Test
@@ -81,7 +82,7 @@ class PostServiceImplTest {
         Response response = postService.likePost(postId, memberId);
 
         // then
-        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        assertEquals(HttpStatus.CREATED.toString(), response.statusCode());
         verify(postLikeRepository, times(1)).save(Mockito.any(PostLike.class));
         verify(postStatsRepository, times(1)).getByPostId(postId);
     }
