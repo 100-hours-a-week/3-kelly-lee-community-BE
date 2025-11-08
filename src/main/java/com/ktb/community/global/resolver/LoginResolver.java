@@ -23,7 +23,13 @@ public class LoginResolver implements HandlerMethodArgumentResolver {
 
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
-        return Long.parseLong(request.getAttribute("memberId").toString());
+        Object attr = request.getAttribute("memberId");
+
+        if (attr == null) {
+            return 0L;
+        }
+
+        return Long.parseLong(attr.toString());
     }
 }
 

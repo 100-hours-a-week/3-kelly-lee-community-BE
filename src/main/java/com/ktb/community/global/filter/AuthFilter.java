@@ -3,7 +3,6 @@ package com.ktb.community.global.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ktb.community.dto.Response;
 import com.ktb.community.global.constant.StatusCode;
-import com.ktb.community.global.exception.CustomUnauthorizedException;
 import com.ktb.community.global.provider.JwtProvider;
 import com.ktb.community.global.validator.RouteValidator;
 import io.jsonwebtoken.Claims;
@@ -16,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -40,7 +38,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request){
-        return !routeValidator.isSecured.test(request);
+        return  request.getMethod().equalsIgnoreCase("OPTIONS")||!routeValidator.isSecured.test(request);
     }
 
     @Override
