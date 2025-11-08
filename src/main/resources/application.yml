@@ -52,3 +52,6 @@ security:
       path: /auth
     - method: PATCH
       path: /auth
+
+cors:
+  allowed-origins: ${FRONTEND_URL}
