@@ -1,6 +1,5 @@
 package com.ktb.community.global.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ktb.community.global.resolver.LoginResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +18,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+
+    @Value("${cors.allowed-origins}")
+    private String[] allowedOrigins;
 
     private final LoginResolver loginResolver;
 
@@ -39,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
