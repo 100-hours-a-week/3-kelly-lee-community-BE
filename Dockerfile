@@ -7,7 +7,7 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle settings.gradle ./
 
-RUN chomod +x gradlew
+RUN chmod +x gradlew
 RUN ./gradlew dependencies
 
 COPY . .
