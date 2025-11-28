@@ -102,6 +102,6 @@ jobs:
           "docker stop community-be || true",
           "docker rm community-be || true",
           "docker pull '${{ secrets.DOCKER_USERNAME }}/community-be:latest'",
-          "docker run -d -p 8080:8080 --env-file ~/community-be.env --name community-be '${{ secrets.DOCKER_USERNAME }}/community-be:latest'"
+          "docker run -d -p 8080:8080 --env-file /home/ubuntu/community-be.env --name community-be '${{ secrets.DOCKER_USERNAME }}/community-be:latest'"
           ]' \
           --region ${{ secrets.AWS_REGION }}
