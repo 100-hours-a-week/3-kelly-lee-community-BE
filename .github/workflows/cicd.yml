@@ -83,6 +83,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Install Docker if not exists
+        run: |
+          aws ssm send-command \
+            --instance-ids ${{ secrets.SERVER_INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=[
+              "command -v docker || (sudo apt update && sudo apt install -y docker.io && sudo systemctl enable docker && sudo systemctl start docker)"
+            ]' \
+            --region ${{ secrets.AWS_REGION }}
+
       - name: Deploy to EC2 with SSM
         run: |
           aws ssm send-command \
